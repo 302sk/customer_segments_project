@@ -12060,8 +12060,13 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>回答:</strong>
-0超市、1餐厅、2零售商</p>
+<p><strong>回答:</strong><br>
+0超市、1餐厅、2零售商<br>
+补充分析：</p>
+<ul>
+<li>从Fresh的采购费用看，0的数值接近Fresh的平均值，在percentile50%和75%之间；而1的采购量是平均值的3.5倍，并且远大于percetile 75%。说明1的Fresh采购量在整个数据集中处于偏大的水平；2的采购量远低于平均值，在percentile 25%附近，说明2的Fresh采购量数据较小水平</li>
+<li>Detergents_Paper的采购费用，0大于平均值，并且远远大于percetile 50%，接近 75%，说明0的Detergents_Paper采购量在整个数据集中处于比较高的水平；1和2的采购量则远远小平均值</li>
+</ul>
 
 </div>
 </div>
@@ -21926,11 +21931,12 @@ JEmSJEmqsGgkSZIkSZKkiv8DX7lcXqi8o3UAAAAASUVORK5CYII=
 第一和第二主成分总共表示了70.68%的方差<br>
 前四个主成分表示了93.11%的方差</p>
 <ul>
-<li>第一主成分代表采购Fresh和Frozen较多的客户，采购Detergents_paper很少，可能代表超市</li>
-<li>第二主成分代表总体采购较少的客户，其中尤其较少采购Fresh、Frozen和Delicatessen，可能是小型零售商</li>
-<li>第三主成分采购Delicatessen和Frozen较多的客户，可能代表咖啡馆</li>
-<li>第四主成分代表采购Frozen和Detergents_paper较多的客户，可能是冷饮店</li>
+<li>第一主成分代表采购Fresh和Frozen较多的客户，几乎不采购Detergents_paper。说明这样的客户很有可能会加工食品，而日用品的需求量很小，这样的客户很可能是餐厅或者咖啡馆</li>
+<li>第二主成分代表总体采购较少的客户，其中尤其较少采购Fresh、Frozen和Delicatessen；但是会有少量的Grocery，Detergents_Paper和Milk，这样的客户可能会卖一些杂货零食，但规模很小。根据以上信息推断很有可能是小型商店、杂货铺</li>
+<li>第三主成分采购Delicatessen和Frozen较多的客户，并且很少采购Fresh和日用品，说明这样的客户几乎不做食品的加工（Fresh很少），但是又有比较大量的现成食品和冷冻食品的需求量，据此推断很可能代表咖啡馆或者快餐店</li>
+<li>第四主成分代表采购Frozen和Detergents_paper较多的客户，而几乎不采购Delicatessen，猜测可能是销售冷饮的店铺还有少量杂货零食，推断可能是甜品店一类的店铺</li>
 </ul>
+<p>对答案进行了补充，添加了中间分析的步骤。</p>
 
 </div>
 </div>
@@ -23845,9 +23851,16 @@ K-Means优点：</p>
 <li>算法简单，容易理解。</li>
 <li>确定的k个划分到达平方误差最小。</li>
 <li>当聚类是密集的，且类与类之间区别明显时，效果较好。</li>
-<li>对于处理大数据集，这个算法是相对可伸缩和高效的
-搞死混合模型聚类算法优点：</li>
+<li>对于处理大数据集，这个算法是相对可伸缩和高效的  </li>
+</ul>
+<p>高斯混合模型聚类算法优点：</p>
+<ul>
 <li>聚类不是硬边界，有划分概率，较为灵活</li>
+<li>因为对每个被分类的样本都有概率描述，那么在一些比较难以分类的场景，可以参考分类概率人为做出调整或者决策</li>
+</ul>
+<p>以上两种算法也有些共有的缺陷，例如：</p>
+<ul>
+<li>都依赖初始化所用的类别数量，如果初始类别数量选择不好会造成计算量很大或者分类不明确  </li>
 </ul>
 <p>这里选择K-Means算法。因为通过对客户数据的观察，比较容易初步划分客户类型（比如，通过Detergents_paper的采购花费），容易选定初始K值。</p>
 
@@ -25228,7 +25241,13 @@ BAAAADBi/j++ZmIKjxpygwAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>回答:</strong><br>
-Segment0 代表了餐厅， Segement1代表超市。这个划分与项目开始时给出的统计值相符，Segment1代表的客户采购更多的Grocery、Detergents_Paper和Milk，按照常理推断很可能是超市；Segment0相对Segment1采购Fresh和Frozen的花费更多，很可能是需要大量生鲜和冷冻食品的餐厅。</p>
+Segment0 代表了餐厅， Segement1代表超市。</p>
+<ul>
+<li><p>Segment1代表的客户采购的Grocery的数值已经远大于平均值7951，并且大于 percentile 75%的值，在整个数据集中很突出，Detergents_Paper和Milk的采购值与Grocery所在的位置类似：都远大于平均值，大于75%的值，说明这两个品种的采购量也很大。以上三个值在整个数据集中比较多，那么这类客户很可能是超市，这与项目最初的分析相符。</p>
+</li>
+<li><p>Segment0在上述三个（Grocery、Detergents_Paper、Milk）品种的采购量则恰恰相反，都处于远小于平均值的位置，比如Milk 1897接近25%数值的位置，Grocery 2477.0 远小于平均值7951，很可能是需要比较多生鲜和冷冻食品的餐厅，而不是需要更多杂货、牛奶、卫生纸的超市。</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -25281,7 +25300,9 @@ Sample point 2 predicted to be in Cluster 0
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>回答:</strong></p>
-<p>样本点0和1的预测与最初观察的结果相符，分别属于超市和餐厅。样本2观察的结果是零售商，因为从采购量级上看Fresh与样本1相差较多，所以没有与样本1归归为一类。</p>
+<p>样本点0和1的预测与最初观察的结果相符，分别属于超市和餐厅。<br>
+样本0的Grocery和Detergents_Paper的采购量都大于各自维度的平均值，并且处在各自75%的位置，采购量在整个数据集的这两个维度中处于比较高的水平；Milk的采购花费低于平均值，出在略低于50%的位置；综合来看，Grocery和Detergents_Paper与Segment1的簇中心比较接近，所以归类为Cluster 1比较合理。</p>
+<p>样本1和2的Grocery、Detergents_Paper和Milk的采购量都远远低于各自维度的平均值，与Segment0的簇中心的值比较类似，所以归为Cluster 0</p>
 
 </div>
 </div>
